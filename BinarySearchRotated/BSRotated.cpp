@@ -15,18 +15,6 @@ Example
 
 using namespace std;
 
-int binarySearch(vector<int>& nums, int target) {
-    int l = 0;
-    int r = nums.size() - 1;
-    while (l <= r) {
-        int mid = l + (r - l) / 2;
-        if (nums[mid] == target) return mid;
-        else if (nums[mid] > target) r = mid - 1;
-        else l = mid + 1;
-    }
-    return -1;
-}
-
 int search(vector<int>& nums, int target) {
 
     int l = 0;
@@ -36,7 +24,7 @@ int search(vector<int>& nums, int target) {
         int mid = l + (r - l) / 2;
         if (nums[mid] == target) return mid;
         // check if left subarray is sorted
-        else if (nums[l] < nums[mid]) {
+        else if (nums[l] <= nums[mid]) {
             // left subarray is sorted, so check if target is in left subarray
             if (target >= nums[l] && target < nums[mid]) {
                 // target is in left subarray, so cut off the right subarray
@@ -73,7 +61,7 @@ void searchAll(vector<int>& nums) {
 
 int main() {
 
-    vector<int> nums = {4,5,6,7,0,1,2};
+    vector<int> nums = {3,1};
     searchAll(nums);
 
     return 0;
