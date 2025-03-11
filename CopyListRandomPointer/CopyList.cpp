@@ -39,13 +39,14 @@ Node* copyRandomList(Node* head) {
     // our new nodes do not have their next or random members assigned yet, so let's do that
     current = head;
     while (current) {
-        // use the mapped versions of next and random
+        // use the copied versions of next and random
         Node* copy = map[current];
         copy->next = map[current->next];
         copy->random = map[current->random];
         current = current->next;
     }
 
+    // return the copied head
     return map[head];
 }
 
