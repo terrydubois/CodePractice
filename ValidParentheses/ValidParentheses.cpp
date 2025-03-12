@@ -49,7 +49,8 @@ bool isValid(string s) {
         }
     }
 
-    return true;
+    // stack should be empty now
+    return parens.size() == 0;
 }
 
 int main() {
