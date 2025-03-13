@@ -30,7 +30,7 @@ ListNode* reverseList(ListNode* head) {
     // loop through the list
     while (current) {
         
-        // save a copy of current-next, because we overwrite it to be prev
+        // save a copy of current->next, because we overwrite it to be prev
         ListNode* next = current->next;
         current->next = prev;
 
