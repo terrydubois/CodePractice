@@ -14,8 +14,18 @@ Example 2:
     Output: [1,3,5]
 */
 
-var map = function(arr, fn) {
+// using Array.map
+var _map = function(arr, fn) {
     return arr.map(fn);
+}
+
+// without using Array.map
+var map = function(arr, fn) {
+    let arrMapped = [];
+    for (let i = 0; i < arr.length; i++) {
+        arrMapped.push(fn(arr[i], i));
+    }
+    return arrMapped;
 }
 
 let _arr = [1, 2, 3];
