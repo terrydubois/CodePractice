@@ -61,7 +61,7 @@ void searchAll(vector<int>& nums) {
 
 int main() {
 
-    vector<int> nums = {3,1};
+    vector<int> nums = {17, 18, 30, 102, 2, 6};
     searchAll(nums);
 
     return 0;
