@@ -37,7 +37,7 @@ void printBoard(vector<vector<char>>& board) {
     }
 }
 
-bool dfs(vector<vector<char>>& board, string word, int wordIndex, int row, int col, unordered_set<string>& visited) {
+bool dfs(vector<vector<char>>& board, string word, int wordIndex, int row, int col) {
 
     // if we've reached the end of the word, return true
     if (wordIndex >= word.size()) return true;
@@ -46,24 +46,24 @@ bool dfs(vector<vector<char>>& board, string word, int wordIndex, int row, int c
     if (row < 0 || row >= board.size()) return false;
     if (col < 0 || col >= board[0].size()) return false;
 
+    // if we've hit a #, we have visited this cell before
+    if (board[row][col] == '#') return false;
+
     // if we've found a char that's not what we are looking for, return false
     if (board[row][col] != word[wordIndex]) return false;
 
-    // if we've already visited this cell, return false
-    string cellStr = to_string(col) + "," + to_string(row);    
-    if (visited.find(cellStr) != visited.end()) return false;
-
-    // if we have made it to this point, we have found the char we are looking for!
-    // let's visit it
-    visited.insert(cellStr);
+    // get current cell value and mark as visited by changing cell to #
+    char cell = board[row][col];
+    board[row][col] = '#';
     
     // check in all four directions
-    bool resultR = dfs(board, word, wordIndex + 1, row, col + 1, visited);
-    bool resultL = dfs(board, word, wordIndex + 1, row, col - 1, visited);
-    bool resultU = dfs(board, word, wordIndex + 1, row - 1, col, visited);
-    bool resultD = dfs(board, word, wordIndex + 1, row + 1, col, visited);
+    bool resultR = dfs(board, word, wordIndex + 1, row, col + 1);
+    bool resultL = dfs(board, word, wordIndex + 1, row, col - 1);
+    bool resultU = dfs(board, word, wordIndex + 1, row - 1, col);
+    bool resultD = dfs(board, word, wordIndex + 1, row + 1, col);
 
-    visited.erase(cellStr);
+    // revert cell back to original value before continuing
+    board[row][col] = cell;
 
     return resultR || resultL || resultU || resultD;
 }
@@ -75,8 +75,7 @@ bool exist(vector<vector<char>>& board, string word) {
         vector<char>& row = board[i];
         for (int j = 0; j < row.size(); j++) {
             if (row[j] == firstChar) {
-                unordered_set<string> visited;
-                if (dfs(board, word, 0, i, j, visited)) {
+                if (dfs(board, word, 0, i, j)) {
                     return true;
                 }
             }
