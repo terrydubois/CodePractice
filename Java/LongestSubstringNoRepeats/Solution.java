@@ -1,3 +1,16 @@
+/*
+LeetCode 3. Longest Substring Without Repeating Characters
+
+Given a string s, find the length of the longest substring without duplicate characters.
+
+Example 1
+    Input: s = "abcabcbb"
+    Output: 3
+
+Example 2
+    Input: s = "bbbbb"
+    Output: 1
+*/
 import java.util.HashSet;
 
 public class Solution {
