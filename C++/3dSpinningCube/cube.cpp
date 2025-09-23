@@ -15,13 +15,14 @@ const int width = 80, height = 44;
 float zBuffer[width * height];
 char buffer[width * height];
 int bgASCIICode = ' ';
-int distFromCam = 200;
+int distFromCam = 150;
 float K1 = 40;
 float x, y, z;
 float sinA, sinB, sinC, cosA, cosB, cosC;
 float oneOverZ;
 int xp, yp;
 int idx;
+int frame = 0;
 
 float calcX(int i, int j, int k) {
     return j * sinA * sinB * cosC
@@ -65,6 +66,19 @@ void calculatePoint(float i, float j, float k, char ch) {
     }
 }
 
+void drawLine(char ch, float x1, float y1, float z1, float x2, float y2, float z2) {
+    for (float percent = 0; percent <= 1; percent += 0.025) {
+        float _x = x1 + (x2 - x1) * percent;
+        float _y = y1 + (y2 - y1) * percent;
+        float _z = z1 + (z2 - z1) * percent;
+        calculatePoint(_x, _y, _z, ch);
+    }
+}
+
+float sinNormalized(int x) {
+    return (sin(x * 0.1) / 2) + 0.5;
+}
+
 int main() {
 
     // clear the screen (C++ equivalent of "\x1b[2J")
@@ -86,16 +100,78 @@ int main() {
         cosC = cos(C);
 
         // calculate points on each surface
-        for (float i = -cubeWidth / 2; i < cubeWidth / 2; i += 0.15) {
-            for (float j = -cubeWidth / 2; j < cubeWidth / 2; j += 0.15) {
-                calculatePoint(i, j, -cubeWidth / 2, '@');
-                calculatePoint(cubeWidth / 2, j, i, '$');
-                calculatePoint(-cubeWidth / 2, j, -i, '~');
-                calculatePoint(-i, j, cubeWidth / 2, '#');
-                calculatePoint(i, -cubeWidth / 2, -j, ';');
-                calculatePoint(i, cubeWidth / 2, j, '+');
+        float mCubeWidth = cubeWidth * 0.5;//sinNormalized(frame);
+        for (float i = -mCubeWidth / 2; i < mCubeWidth / 2; i += 0.15) {
+            for (float j = -mCubeWidth / 2; j < mCubeWidth / 2; j += 0.15) {
+                calculatePoint(i, j, -mCubeWidth / 2, '@');
+                calculatePoint(mCubeWidth / 2, j, i, '$');
+                calculatePoint(-mCubeWidth / 2, j, -i, '~');
+                calculatePoint(-i, j, mCubeWidth / 2, '#');
+                calculatePoint(i, -mCubeWidth / 2, -j, ';');
+                calculatePoint(i, mCubeWidth / 2, j, '+');
             }
         }
+        
+
+        drawLine('@',
+            -cubeWidth / 2, -cubeWidth / 2, -cubeWidth / 2,
+            cubeWidth / 2, -cubeWidth / 2, -cubeWidth / 2
+        );
+
+        drawLine('$',
+            cubeWidth / 2, -cubeWidth / 2, -cubeWidth / 2,
+            cubeWidth / 2, cubeWidth / 2, -cubeWidth / 2
+        );
+
+        drawLine('~',
+            -cubeWidth / 2, cubeWidth / 2, -cubeWidth / 2,
+            -cubeWidth / 2, -cubeWidth / 2, -cubeWidth / 2
+        );
+        
+        drawLine('+',
+            -cubeWidth / 2, cubeWidth / 2, cubeWidth / 2,
+            -cubeWidth / 2, cubeWidth / 2, -cubeWidth / 2
+        );
+
+        drawLine('#',
+            -cubeWidth / 2, -cubeWidth / 2, cubeWidth / 2,
+            -cubeWidth / 2, -cubeWidth / 2, -cubeWidth / 2
+        );
+
+        drawLine('&',
+            cubeWidth / 2, cubeWidth / 2, cubeWidth / 2,
+            cubeWidth / 2, cubeWidth / 2, -cubeWidth / 2
+        );
+
+        drawLine('!',
+            cubeWidth / 2, -cubeWidth / 2, cubeWidth / 2,
+            cubeWidth / 2, -cubeWidth / 2, -cubeWidth / 2
+        );
+
+        drawLine(';',
+            cubeWidth / 2, cubeWidth / 2, -cubeWidth / 2,
+            -cubeWidth / 2, cubeWidth / 2, -cubeWidth / 2
+        );
+
+        drawLine('+',
+            -cubeWidth / 2, cubeWidth / 2, cubeWidth / 2,
+            cubeWidth / 2, cubeWidth / 2, cubeWidth / 2
+        );
+
+        drawLine('#',
+            -cubeWidth / 2, -cubeWidth / 2, cubeWidth / 2,
+            cubeWidth / 2, -cubeWidth / 2, cubeWidth / 2
+        );
+
+        drawLine('!',
+            cubeWidth / 2, -cubeWidth / 2, cubeWidth / 2,
+            cubeWidth / 2, cubeWidth / 2, cubeWidth / 2
+        );
+
+        drawLine('$',
+            -cubeWidth / 2, cubeWidth / 2, cubeWidth / 2,
+            -cubeWidth / 2, -cubeWidth / 2, cubeWidth / 2
+        );
 
         // move terminal cursor to top-left corner
         cout << "\033[H";
@@ -128,12 +204,14 @@ int main() {
         }
 
         // increment angles A, B, and C
-        A += 0.05;
-        B += 0.05;
-        C += 0.01;
+        A += 0.02;
+        B += 0.02;
+        C = 0.01;
 
         // delay between frames
-        this_thread::sleep_for(chrono::microseconds(1000));
+        this_thread::sleep_for(chrono::microseconds(20000));
+
+        frame++;
     }
 
     return 0;
